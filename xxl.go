@@ -8,23 +8,52 @@ import (
 	"github.com/xxl-job/xxl-job-executor-go"
 )
 
-func x() {
+const key_xxl_req = "_xxl_param"
+
+type XxlJobConf struct {
+	ServerAddr  string
+	AccessToken string
+	LocalIp     string
+	LocalPort   string
+	RegistryKey string
+}
+
+type XxlJob interface {
+	Name() string
+	Run(context.Context, *xxl.RunReq) error
+}
+
+type LocalExec struct {
+	xxlExec xxl.Executor
+
+	mux http.Handler
+}
+
+func NewExec(conf XxlJobConf) *LocalExec {
 	exec := xxl.NewExecutor(
-		xxl.ServerAddr("http://127.0.0.1/xxl-job-admin"),
-		xxl.AccessToken(""),            //请求令牌(默认为空)
-		xxl.ExecutorIp("127.0.0.1"),    //可自动获取
+		xxl.ServerAddr(conf.ServerAddr),
+		xxl.ExecutorIp(conf.LocalIp),
 		xxl.ExecutorPort("9999"),       //默认9999（非必填）
 		xxl.RegistryKey("golang-jobs"), //执行器名称
 		//xxl.SetLogger(&logger{}),       //自定义日志
 	)
-
-	exec.Init()
+	return &LocalExec{xxlExec: exec}
 }
 
-const key_xxl_req = "_xxl_param"
+func (e *LocalExec) Init() *LocalExec {
+	e.xxlExec.Init()
+	e.mux = XxlJobMux(e.xxlExec)
+	return e
+}
 
-type XxlJob interface {
-	Run(context.Context, *xxl.RunReq) string
+func (e *LocalExec) RegJob(job XxlJob) *LocalExec {
+	name, jobF := XxlJobFunc(job)
+	e.xxlExec.RegTask(name, jobF)
+	return e
+}
+
+func (e *LocalExec) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+	e.mux.ServeHTTP(w, r)
 }
 
 func XxlJobMux(exec xxl.Executor) http.Handler {
@@ -47,8 +76,11 @@ func RunReq(ctx context.Context) *xxl.RunReq {
 	return ctx.Value(key_xxl_req).(*xxl.RunReq)
 }
 
-func XxlJobFunc(job XxlJob) xxl.TaskFunc {
-	return func(ctx context.Context, req *xxl.RunReq) string {
-		return job.Run(ctx, req)
+func XxlJobFunc(job XxlJob) (string, xxl.TaskFunc) {
+	return job.Name(), func(ctx context.Context, req *xxl.RunReq) string {
+		if err := job.Run(ctx, req); err != nil {
+			return "error: " + err.Error()
+		}
+		return "ok"
 	}
 }
