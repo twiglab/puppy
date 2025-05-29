@@ -10,45 +10,26 @@ import (
 
 const key_xxl_req = "_xxl_param"
 
-type XxlJobConf struct {
-	ServerAddr  string
-	AccessToken string
-	LocalIp     string
-	LocalPort   string
-	RegistryKey string
-}
-
 type XxlJob interface {
 	Name() string
 	Run(context.Context, *xxl.RunReq) error
 }
 
 type LocalExec struct {
-	xxlExec xxl.Executor
+	XxlExec xxl.Executor
 
 	mux http.Handler
 }
 
-func NewExec(conf XxlJobConf) *LocalExec {
-	exec := xxl.NewExecutor(
-		xxl.ServerAddr(conf.ServerAddr),
-		xxl.ExecutorIp(conf.LocalIp),
-		xxl.ExecutorPort("9999"),       //默认9999（非必填）
-		xxl.RegistryKey("golang-jobs"), //执行器名称
-		//xxl.SetLogger(&logger{}),       //自定义日志
-	)
-	return &LocalExec{xxlExec: exec}
-}
-
 func (e *LocalExec) Init() *LocalExec {
-	e.xxlExec.Init()
-	e.mux = XxlJobMux(e.xxlExec)
+	e.XxlExec.Init()
+	e.mux = XxlJobMux(e.XxlExec)
 	return e
 }
 
 func (e *LocalExec) RegJob(job XxlJob) *LocalExec {
 	name, jobF := XxlJobFunc(job)
-	e.xxlExec.RegTask(name, jobF)
+	e.XxlExec.RegTask(name, jobF)
 	return e
 }
 
