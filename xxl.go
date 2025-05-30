@@ -2,7 +2,9 @@ package puppy
 
 import (
 	"context"
+	"fmt"
 	"net/http"
+	"time"
 
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
@@ -17,14 +19,14 @@ type XxlJob interface {
 }
 
 type LocalExec struct {
-	XxlExec xxl.Executor
+	XxlExec   xxl.Executor
+	LocalAddr string
 
 	mux http.Handler
 }
 
 func (e *LocalExec) Init() *LocalExec {
 	e.XxlExec.Init()
-	e.mux = XxlJobMux(e.XxlExec)
 	return e
 }
 
@@ -36,6 +38,16 @@ func (e *LocalExec) RegJob(job XxlJob) *LocalExec {
 
 func (e *LocalExec) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	e.mux.ServeHTTP(w, r)
+}
+
+func (e *LocalExec) Run() error {
+	e.mux = XxlJobMux(e.XxlExec)
+	serv := http.Server{
+		Addr:         e.LocalAddr,
+		WriteTimeout: time.Second * 3,
+		Handler:      e.mux,
+	}
+	return serv.ListenAndServe()
 }
 
 func XxlJobMux(exec xxl.Executor) http.Handler {
@@ -56,6 +68,6 @@ func XxlJobFunc(job XxlJob) (string, xxl.TaskFunc) {
 		if err := job.Run(ctx, req); err != nil {
 			panic(err)
 		}
-		return "ok"
+		return fmt.Sprintf("task: %d, name: %s run ok", req.JobID, req.ExecutorHandler)
 	}
 }
