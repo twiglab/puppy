@@ -5,6 +5,7 @@ import (
 	"net/http"
 
 	"github.com/go-chi/chi/v5"
+	"github.com/go-chi/chi/v5/middleware"
 	"github.com/xxl-job/xxl-job-executor-go"
 )
 
@@ -39,6 +40,7 @@ func (e *LocalExec) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 func XxlJobMux(exec xxl.Executor) http.Handler {
 	mux := chi.NewMux()
+	mux.Use(middleware.Recoverer)
 
 	mux.Post("/run", exec.RunTask)
 	mux.Post("/kill", exec.KillTask)
@@ -49,18 +51,10 @@ func XxlJobMux(exec xxl.Executor) http.Handler {
 	return mux
 }
 
-func WithRunReq(ctx context.Context, req *xxl.RunReq) context.Context {
-	return context.WithValue(ctx, key_xxl_req, req)
-}
-
-func RunReq(ctx context.Context) *xxl.RunReq {
-	return ctx.Value(key_xxl_req).(*xxl.RunReq)
-}
-
 func XxlJobFunc(job XxlJob) (string, xxl.TaskFunc) {
 	return job.Name(), func(ctx context.Context, req *xxl.RunReq) string {
 		if err := job.Run(ctx, req); err != nil {
-			return "error: " + err.Error()
+			panic(err)
 		}
 		return "ok"
 	}
