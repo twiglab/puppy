@@ -19,20 +19,30 @@ type XxlJob interface {
 }
 
 type LocalExec struct {
-	XxlExec   xxl.Executor
 	LocalAddr string
 
-	mux http.Handler
+	exec xxl.Executor
+	mux  http.Handler
+}
+
+func NewLocalExec(addr string, exec xxl.Executor) *LocalExec {
+	le := &LocalExec{
+		exec:      exec,
+		LocalAddr: addr,
+	}
+
+	return le
 }
 
 func (e *LocalExec) Init() *LocalExec {
-	e.XxlExec.Init()
+	e.exec.Init()
+	e.mux = XxlJobMux(e.exec)
 	return e
 }
 
 func (e *LocalExec) RegJob(job XxlJob) *LocalExec {
 	name, jobF := XxlJobFunc(job)
-	e.XxlExec.RegTask(name, jobF)
+	e.exec.RegTask(name, jobF)
 	return e
 }
 
@@ -41,7 +51,6 @@ func (e *LocalExec) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 }
 
 func (e *LocalExec) Run() error {
-	e.mux = XxlJobMux(e.XxlExec)
 	serv := http.Server{
 		Addr:         e.LocalAddr,
 		WriteTimeout: time.Second * 3,
