@@ -8,7 +8,7 @@ import (
 const msgTpl = `
 {{ .R.ProjName }} {{ .R.Date.Format "2006年01月02日" }} {{ .R.Date | weekday}}
 {{.W.DayWeather}} - {{ .W.NightWeather }} {{.W.NightTemp}}~{{.W.DayTemp}}度
->客流总数为：<font color="warning"> {{ .R.Total }} </font>，晚间（20~22点）客流为：<font color="warning"> {{ .R.Night }} </font>
+>总客流为：<font color="warning"> {{ .R.Total }} </font>，晚间（20~22点）：<font color="warning"> {{ .R.Night }} </font>
 `
 
 func weekday(t time.Time) string {
