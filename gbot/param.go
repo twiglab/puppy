@@ -14,6 +14,8 @@ type BotResult struct {
 	Total    int64
 	Night    int64
 
+	BeforWeekDay int64
+
 	Items []Item
 }
 

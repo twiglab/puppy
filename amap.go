@@ -17,6 +17,13 @@ type WeatherResult struct {
 	NightWeather string
 }
 
+var wr *WeatherResult = &WeatherResult{
+	DayTemp:      "0",
+	NightTemp:    "0",
+	DayWeather:   "天",
+	NightWeather: "气",
+}
+
 type AmapWeather struct {
 	key    string
 	client *req.Client
@@ -37,7 +44,7 @@ func (w *AmapWeather) GetWeather(ctx context.Context, code string) (*WeatherResu
 
 	resp, err := r.Get(weather_url)
 	if err != nil {
-		return nil, err
+		return wr, err
 	}
 
 	x := gjson.GetBytes(resp.Bytes(), "forecasts.0.casts.0")
