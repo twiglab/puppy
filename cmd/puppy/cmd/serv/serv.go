@@ -3,8 +3,10 @@ package serv
 import (
 	"fmt"
 	"log"
+	"net/http"
 	"os"
 
+	"github.com/go-chi/chi/v5"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 	"gopkg.in/yaml.v3"
@@ -25,7 +27,7 @@ var cfgFile string
 
 func init() {
 	cobra.OnInitialize(initConfig)
-	ServCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file")
+	ServCmd.PersistentFlags().StringVarP(&cfgFile, "config", "c", "", "config file")
 }
 
 func initConfig() {
@@ -35,7 +37,7 @@ func initConfig() {
 		viper.SetConfigType("yaml")
 	}
 
-	viper.AutomaticEnv() // read in environment variables that match
+	viper.AutomaticEnv()
 
 	if err := viper.ReadInConfig(); err == nil {
 		fmt.Fprintln(os.Stderr, "Using config file:", viper.ConfigFileUsed())
@@ -63,7 +65,10 @@ func run() {
 	gbot := buildGBot(conf)
 	exec.RegJob(gbot)
 
-	if err := exec.Run(); err != nil {
+	mux := chi.NewMux()
+	mux.Mount("/", exec)
+
+	if err := http.ListenAndServe(exec.LocalAddr, mux); err != nil {
 		log.Fatal(err)
 	}
 }
