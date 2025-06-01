@@ -6,10 +6,10 @@ import (
 )
 
 const msgTpl = `
-{{ .R.ProjName }} {{ .R.Date.Format "2006年01月02日" }} {{ .R.Date | weekday}}
+{{ .R.ProjName }} {{ .R.Date.Format "2006.01.02" }} {{ .R.Date | weekday}}
 {{.W.DayWeather}} - {{ .W.NightWeather }} {{.W.NightTemp}}~{{.W.DayTemp}}度
 >总客流为：<font color="warning"> {{ .R.Total }} </font>，晚间（20~22点）：<font color="warning"> {{ .R.Night }} </font>
->上周同期：<font color="warning"> {{ .R.BeforWeekDay }} </font>
+>上周：<font color="warning"> {{ .R.BeforWeekDay }} </font>
 `
 
 func weekday(t time.Time) string {
