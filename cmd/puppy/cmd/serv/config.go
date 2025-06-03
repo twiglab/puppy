@@ -4,11 +4,11 @@ import (
 	"os"
 
 	"github.com/imroc/req/v3"
+	"github.com/it512/xxl-job-exec"
 	"github.com/spf13/cobra"
 	"github.com/twiglab/puppy"
 	"github.com/twiglab/puppy/gbot"
 	"github.com/xen0n/go-workwx/v2"
-	"github.com/xxl-job/xxl-job-executor-go"
 	"gopkg.in/yaml.v3"
 )
 

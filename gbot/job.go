@@ -7,8 +7,8 @@ import (
 	"text/template"
 	"time"
 
+	"github.com/it512/xxl-job-exec"
 	"github.com/twiglab/puppy"
-	"github.com/xxl-job/xxl-job-executor-go"
 
 	"github.com/xen0n/go-workwx/v2"
 )
