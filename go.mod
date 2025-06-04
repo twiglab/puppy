@@ -5,7 +5,7 @@ go 1.24.2
 require (
 	github.com/go-chi/chi/v5 v5.2.1
 	github.com/imroc/req/v3 v3.52.2
-	github.com/it512/xxl-job-exec v0.0.0-20250604023038-5be06d9ea266
+	github.com/it512/xxl-job-exec v0.0.0-20250604151812-a520539d7331
 	github.com/spf13/cobra v1.9.1
 	github.com/spf13/viper v1.20.1
 	github.com/tidwall/gjson v1.18.0
