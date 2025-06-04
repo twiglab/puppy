@@ -11,7 +11,6 @@ require (
 	github.com/tidwall/gjson v1.18.0
 	github.com/twiglab/doggy v0.0.0-20250525061416-9684c1100b9b
 	github.com/xen0n/go-workwx/v2 v2.0.0-20250512044836-ae8c900c575c
-	github.com/xxl-job/xxl-job-executor-go v1.2.0
 	github.com/ybbus/jsonrpc/v3 v3.1.6
 	gopkg.in/natefinch/lumberjack.v2 v2.2.1
 	gopkg.in/yaml.v3 v3.0.1
@@ -22,7 +21,6 @@ require (
 	github.com/cenkalti/backoff/v4 v4.3.0 // indirect
 	github.com/cloudflare/circl v1.6.1 // indirect
 	github.com/fsnotify/fsnotify v1.8.0 // indirect
-	github.com/go-basic/ipv4 v1.0.0 // indirect
 	github.com/go-task/slim-sprig/v3 v3.0.0 // indirect
 	github.com/go-viper/mapstructure/v2 v2.2.1 // indirect
 	github.com/google/pprof v0.0.0-20250501235452-c0086092b71a // indirect
