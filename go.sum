@@ -41,6 +41,10 @@ github.com/inconshreveable/mousetrap v1.1.0 h1:wN+x4NVGpMsO7ErUn/mUI3vEoE6Jt13X2
 github.com/inconshreveable/mousetrap v1.1.0/go.mod h1:vpF70FUmC8bwa3OWnCshd2FqLfsEA9PFc4w1p2J65bw=
 github.com/it512/xxl-job-exec v0.0.0-20250603230738-0c2c03e18dae h1:BeToGoPhSOjB737yNNfqBRjsXHLljrGKj9BD4Wk5J7M=
 github.com/it512/xxl-job-exec v0.0.0-20250603230738-0c2c03e18dae/go.mod h1:D4up7YdSGJAdEQ0EKYlAPVDVDz5Yf4eRsjHtwftrjUs=
+github.com/it512/xxl-job-exec v0.0.0-20250604021411-b8aebed20e68 h1:D9bLeozGtwUwAMXKg5KkiNDLYOexa/yMdqbGqFA30U4=
+github.com/it512/xxl-job-exec v0.0.0-20250604021411-b8aebed20e68/go.mod h1:D4up7YdSGJAdEQ0EKYlAPVDVDz5Yf4eRsjHtwftrjUs=
+github.com/it512/xxl-job-exec v0.0.0-20250604023038-5be06d9ea266 h1:LXW2W9FRuSTGxHH+wL3DMwdNUsnlVJfIsVWuSfGzG2s=
+github.com/it512/xxl-job-exec v0.0.0-20250604023038-5be06d9ea266/go.mod h1:D4up7YdSGJAdEQ0EKYlAPVDVDz5Yf4eRsjHtwftrjUs=
 github.com/jtolds/gls v4.20.0+incompatible h1:xdiiI2gbIgH/gLH7ADydsJ1uDOEzR8yvV7C0MuV77Wo=
 github.com/jtolds/gls v4.20.0+incompatible/go.mod h1:QJZ7F/aHp+rZTRtaJ1ow/lLfFfVYBRgL+9YlvaHOwJU=
 github.com/klauspost/compress v1.18.0 h1:c/Cqfb0r+Yi+JtIEq73FWXVkRonBlf0CRNYc8Zttxdo=

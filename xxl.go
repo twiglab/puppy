@@ -8,14 +8,14 @@ import (
 
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
-	"github.com/xxl-job/xxl-job-executor-go"
+	"github.com/it512/xxl-job-exec"
 )
 
 const key_xxl_req = "_xxl_param"
 
 type XxlJob interface {
 	Name() string
-	Run(context.Context, *xxl.RunReq) error
+	Run(context.Context, *xxl.RunReq) (fmt.Stringer, error)
 }
 
 type LocalExec struct {
@@ -41,7 +41,7 @@ func (e *LocalExec) Init() *LocalExec {
 }
 
 func (e *LocalExec) RegJob(job XxlJob) *LocalExec {
-	name, jobF := XxlJobFunc(job)
+	name, jobF := job.Name(), xxl.JobFunc(job)
 	e.exec.RegTask(name, jobF)
 	return e
 }
@@ -70,13 +70,4 @@ func XxlJobMux(exec xxl.Executor) http.Handler {
 	mux.Post("/idleBeat", exec.IdleBeat)
 
 	return mux
-}
-
-func XxlJobFunc(job XxlJob) (string, xxl.TaskFunc) {
-	return job.Name(), func(ctx context.Context, req *xxl.RunReq) string {
-		if err := job.Run(ctx, req); err != nil {
-			panic(err)
-		}
-		return fmt.Sprintf("task: %d, name: %s run ok", req.JobID, req.ExecutorHandler)
-	}
 }

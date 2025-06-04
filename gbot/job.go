@@ -3,6 +3,7 @@ package gbot
 import (
 	"context"
 	"encoding/json"
+	"fmt"
 	"strings"
 	"text/template"
 	"time"
@@ -28,7 +29,7 @@ func (b *GBotJob) Name() string {
 	return b.JobName
 }
 
-func (b *GBotJob) Run(ctx context.Context, req *xxl.RunReq) error {
+func (b *GBotJob) Run(ctx context.Context, req *xxl.RunReq) (fmt.Stringer, error) {
 	var (
 		err error
 		jp  JobParam
@@ -38,7 +39,7 @@ func (b *GBotJob) Run(ctx context.Context, req *xxl.RunReq) error {
 	)
 
 	if err = json.Unmarshal([]byte(req.ExecutorParams), &jp); err != nil {
-		return err
+		return nil, err
 	}
 
 	now := time.Now()
@@ -50,13 +51,13 @@ func (b *GBotJob) Run(ctx context.Context, req *xxl.RunReq) error {
 	start, end = OpeningTime(now)
 	br.Total, err = b.Dcp.Sum(ctx, start, end, jp.Entry)
 	if err != nil {
-		return err
+		return nil, err
 	}
 
 	start, end = NightTime(now)
 	br.Night, err = b.Dcp.Sum(ctx, start, end, jp.Entry)
 	if err != nil {
-		return err
+		return nil, err
 	}
 
 	start, end = OpeningTime(BeforWeekDay(now))
@@ -72,8 +73,10 @@ func (b *GBotJob) Run(ctx context.Context, req *xxl.RunReq) error {
 	var sb strings.Builder
 	sb.Grow(256)
 	if err = b.Tpl.Execute(&sb, root); err != nil {
-		return err
+		return nil, err
 	}
 
-	return b.MsgBot.SendMarkdownMessage(sb.String())
+	err = b.MsgBot.SendMarkdownMessage(sb.String())
+
+	return xxl.JobRtn(err)
 }
