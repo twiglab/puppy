@@ -9,10 +9,10 @@ import (
 	"github.com/go-chi/chi/v5"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
+	"github.com/twiglab/puppy/gbot"
 	"gopkg.in/yaml.v3"
 )
 
-// servCmd represents the serv command
 var ServCmd = &cobra.Command{
 	Use:   "serv",
 	Short: "A brief description of your command",
@@ -62,11 +62,17 @@ func run() {
 	exec := buildLocalExec(conf)
 	exec.Init()
 
-	gbot := buildGBot(conf)
-	exec.RegJob(gbot)
+	app := buildGBotApp(conf)
+	bot := buildGBot(conf)
+	exec.RegJob(app)
+	exec.RegJob(bot)
+
+	h := buildHandle(conf, app)
 
 	mux := chi.NewMux()
 	mux.Mount("/", exec)
+	mux.Handle("/gbot", h)
+	mux.Handle("/mcp", gbot.McpHandle())
 
 	if err := http.ListenAndServe(exec.LocalAddr, mux); err != nil {
 		log.Fatal(err)

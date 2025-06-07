@@ -1,6 +1,8 @@
 package serv
 
 import (
+	"log"
+	"net/http"
 	"os"
 
 	"github.com/imroc/req/v3"
@@ -38,17 +40,8 @@ type XxlJobConf struct {
 	RegistryKey string `yaml:"registry-key" mapstructure:"registry-key"`
 }
 
-type WxBotConf struct {
-	BotID string `yaml:"bot-id" mapstructure:"bot-id"`
-}
-
 type AmapWeatherConf struct {
 	Key string `yaml:"key" mapstructure:"key"`
-}
-
-type GBotConf struct {
-	Name   string `yaml:"name" mapstructure:"name"`
-	AdCode string `yaml:"adcode" mapstructure:"adcode"`
 }
 
 type LoggerConf struct {
@@ -65,25 +58,59 @@ type AppConf struct {
 	LoggerConf      LoggerConf      `yaml:"log" mapstructure:"log"`
 	XxlJobConf      XxlJobConf      `yaml:"xxl" mapstructure:"xxl"`
 	AmapWeatherConf AmapWeatherConf `yaml:"weather" mapstructure:"weather"`
-	GBotConf        GBotConf        `yaml:"gbot" mapstructure:"gbot"`
-	WxBotConf       WxBotConf       `yaml:"wxbot" mapstructure:"wxbot"`
+	WxAppConf       WxAppConf       `yaml:"wxapp" mapstructure:"wxapp"`
 	DcpConf         DcpConf         `yaml:"dcp" mapstructure:"dcp"`
 }
 
-func buildGBot(conf AppConf) *gbot.GBotJob {
+type WxAppConf struct {
+	CorpID           string           `yaml:"corp-id" mapstructure:"corp-id"`
+	CorpSecret       string           `yaml:"corp-secret" mapstructure:"corp-secret"`
+	AgentID          int64            `yaml:"agent-id" mapstructure:"agent-id"`
+	WxAppReceiveConf WxAppReceiveConf `yaml:"receive" mapstructure:"receive"`
+}
+
+type WxAppReceiveConf struct {
+	Token  string `yaml:"token" mapstructure:"token"`
+	AESKey string `yaml:"aes-key" mapstructure:"aes-key"`
+}
+
+func buildGBotApp(conf AppConf) *gbot.GBotApp {
 	c := req.C().EnableInsecureSkipVerify()
-	whc := workwx.NewWebhookClient(conf.WxBotConf.BotID, workwx.WithHTTPClient(c.GetClient()))
 	dcp := puppy.NewDcpServ(conf.DcpConf.URL, c)
 	weather := puppy.NewAmapWeather(conf.AmapWeatherConf.Key, c)
 
-	return &gbot.GBotJob{
-		JobName: conf.GBotConf.Name,
-		AdCode:  conf.GBotConf.AdCode,
-		Weater:  weather,
-		Dcp:     dcp,
-		MsgBot:  whc,
-		Tpl:     gbot.GBotTemplate(),
+	wx := workwx.New(conf.WxAppConf.CorpID)
+	app := wx.WithApp(conf.WxAppConf.CorpSecret, conf.WxAppConf.AgentID)
+	app.SpawnAccessTokenRefresher()
+
+	return &gbot.GBotApp{
+		Weater: weather,
+		Dcp:    dcp,
+		Tpl:    gbot.GBotTemplate(),
+
+		App: app,
 	}
+}
+
+func buildGBot(conf AppConf) *gbot.GBot {
+	c := req.C().EnableInsecureSkipVerify()
+	dcp := puppy.NewDcpServ(conf.DcpConf.URL, c)
+	weather := puppy.NewAmapWeather(conf.AmapWeatherConf.Key, c)
+
+	return &gbot.GBot{
+		Weater: weather,
+		Dcp:    dcp,
+		Tpl:    gbot.GBotTemplate(),
+	}
+}
+
+func buildHandle(conf AppConf, h workwx.RxMessageHandler) http.Handler {
+	x, err := workwx.NewHTTPHandler(conf.WxAppConf.WxAppReceiveConf.Token,
+		conf.WxAppConf.WxAppReceiveConf.AESKey, h)
+	if err != nil {
+		log.Fatal(err)
+	}
+	return x
 }
 
 func buildLocalExec(conf AppConf) *puppy.LocalExec {
@@ -114,12 +141,14 @@ func c() {
 		AmapWeatherConf: AmapWeatherConf{
 			Key: "f7e3dbe28def5f2e1028d2ae007e91a7",
 		},
-		WxBotConf: WxBotConf{
-			BotID: "101c622f-b942-42c7-ab92-27bc49c031a8",
-		},
-		GBotConf: GBotConf{
-			Name:   "gbot",
-			AdCode: "320100",
+		WxAppConf: WxAppConf{
+			CorpID:     "12345",
+			CorpSecret: "45679",
+			AgentID:    1000013,
+			WxAppReceiveConf: WxAppReceiveConf{
+				Token:  "abcde",
+				AESKey: "xxxxx",
+			},
 		},
 		DcpConf: DcpConf{
 			URL: "https://127.0.0.1:10005/jsonrpc",

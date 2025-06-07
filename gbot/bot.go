@@ -10,23 +10,17 @@ import (
 
 	"github.com/it512/xxl-job-exec"
 	"github.com/twiglab/puppy"
-	"github.com/xen0n/go-workwx/v2"
 )
 
 type GBot struct {
-	JobName string
-	AdCode  string
-
 	Dcp    *puppy.DcpServ
 	Weater *puppy.AmapWeather
-
-	MsgBot *workwx.WebhookClient
 
 	Tpl *template.Template
 }
 
 func (b *GBot) Name() string {
-	return b.JobName
+	return "gbot"
 }
 
 func (b *GBot) Run(ctx context.Context, req *xxl.RunReq) (fmt.Stringer, error) {
@@ -63,7 +57,7 @@ func (b *GBot) Run(ctx context.Context, req *xxl.RunReq) (fmt.Stringer, error) {
 	start, end = OpeningTime(BeforWeekDay(now))
 	br.BeforWeekDay, err = b.Dcp.Sum(ctx, start, end, jp.Entry)
 
-	wi, _ := b.Weater.GetWeather(ctx, b.AdCode)
+	wi, _ := b.Weater.GetWeather(ctx, "320100")
 
 	root := map[string]any{
 		"W": &wi,
@@ -75,8 +69,6 @@ func (b *GBot) Run(ctx context.Context, req *xxl.RunReq) (fmt.Stringer, error) {
 	if err = b.Tpl.Execute(&sb, root); err != nil {
 		return nil, err
 	}
-
-	err = b.MsgBot.SendMarkdownMessage(sb.String())
 
 	return xxl.JobRtn(err)
 }

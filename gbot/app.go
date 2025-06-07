@@ -17,19 +17,15 @@ import (
 type GBotApp struct {
 	App *workwx.WorkwxApp
 
-	JobName string
-	AdCode  string
-
 	Dcp    *puppy.DcpServ
 	Weater *puppy.AmapWeather
-
-	Ai *openai.Client
+	Ai     *openai.Client
 
 	Tpl *template.Template
 }
 
 func (b *GBotApp) Name() string {
-	return b.JobName
+	return "GBotApp"
 }
 
 func (b *GBotApp) Run(ctx context.Context, req *xxl.RunReq) (fmt.Stringer, error) {
@@ -66,7 +62,7 @@ func (b *GBotApp) Run(ctx context.Context, req *xxl.RunReq) (fmt.Stringer, error
 	start, end = OpeningTime(BeforWeekDay(now))
 	br.BeforWeekDay, err = b.Dcp.Sum(ctx, start, end, jp.Entry)
 
-	wi, _ := b.Weater.GetWeather(ctx, b.AdCode)
+	wi, _ := b.Weater.GetWeather(ctx, "320100")
 
 	root := map[string]any{
 		"W": &wi,
