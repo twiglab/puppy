@@ -4,13 +4,13 @@ import "time"
 
 func OpeningTime(now time.Time) (time.Time, time.Time) {
 	start := time.Date(now.Year(), now.Month(), now.Day(), 10, 0, 0, 0, now.Location())
-	end := time.Date(now.Year(), now.Month(), now.Day(), 23, 0, 0, 0, now.Location())
+	end := time.Date(now.Year(), now.Month(), now.Day(), 22, 0, 0, 0, now.Location())
 	return start, end
 }
 
 func NightTime(now time.Time) (time.Time, time.Time) {
 	start := time.Date(now.Year(), now.Month(), now.Day(), 20, 0, 0, 0, now.Location())
-	end := time.Date(now.Year(), now.Month(), now.Day(), 23, 0, 0, 0, now.Location())
+	end := time.Date(now.Year(), now.Month(), now.Day(), 22, 0, 0, 0, now.Location())
 	return start, end
 }
 

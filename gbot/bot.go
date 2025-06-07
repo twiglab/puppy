@@ -10,26 +10,26 @@ import (
 
 	"github.com/it512/xxl-job-exec"
 	"github.com/twiglab/puppy"
-
 	"github.com/xen0n/go-workwx/v2"
 )
 
-type GBotJob struct {
+type GBot struct {
 	JobName string
 	AdCode  string
 
 	Dcp    *puppy.DcpServ
-	MsgBot *workwx.WebhookClient
 	Weater *puppy.AmapWeather
+
+	MsgBot *workwx.WebhookClient
 
 	Tpl *template.Template
 }
 
-func (b *GBotJob) Name() string {
+func (b *GBot) Name() string {
 	return b.JobName
 }
 
-func (b *GBotJob) Run(ctx context.Context, req *xxl.RunReq) (fmt.Stringer, error) {
+func (b *GBot) Run(ctx context.Context, req *xxl.RunReq) (fmt.Stringer, error) {
 	var (
 		err error
 		jp  JobParam
