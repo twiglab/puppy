@@ -9,7 +9,6 @@ import (
 	"time"
 
 	"github.com/it512/xxl-job-exec"
-	"github.com/openai/openai-go"
 	"github.com/twiglab/puppy"
 	"github.com/xen0n/go-workwx/v2"
 )
@@ -19,7 +18,7 @@ type GBotApp struct {
 
 	Dcp    *puppy.DcpServ
 	Weater *puppy.AmapWeather
-	Ai     *openai.Client
+	AI     *puppy.AI
 
 	Tpl *template.Template
 }
@@ -84,22 +83,14 @@ func (a *GBotApp) OnIncomingMessage(msg *workwx.RxMessage) error {
 	if msg.MsgType == workwx.MessageTypeText {
 		text, _ := msg.Text()
 		callWord := text.GetContent()
-		comp, err := a.Ai.Chat.Completions.New(
-			context.Background(),
-			openai.ChatCompletionNewParams{
-				Messages: []openai.ChatCompletionMessageParamUnion{
-					openai.UserMessage(callWord),
-				},
-				Model: "qwen-plus",
-			},
-		)
+		s, err := a.AI.Ask(context.Background(), callWord)
 		if err != nil {
 			return err
 		}
 
 		return a.App.SendTextMessage(
 			&workwx.Recipient{UserIDs: []string{msg.FromUserID}},
-			comp.Choices[0].Message.Content,
+			s,
 			false,
 		)
 	}

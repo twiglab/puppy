@@ -89,6 +89,8 @@ func buildGBotApp(conf AppConf) *gbot.GBotApp {
 		Tpl:    gbot.GBotTemplate(),
 
 		App: app,
+
+		AI:puppy.NewAI("http://119.8.32.64:8000"),
 	}
 }
 

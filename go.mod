@@ -7,7 +7,6 @@ require (
 	github.com/imroc/req/v3 v3.52.2
 	github.com/it512/xxl-job-exec v0.0.0-20250604151812-a520539d7331
 	github.com/mark3labs/mcp-go v0.31.0
-	github.com/openai/openai-go v1.3.0
 	github.com/spf13/cobra v1.9.1
 	github.com/spf13/viper v1.20.1
 	github.com/tidwall/gjson v1.18.0
@@ -45,7 +44,6 @@ require (
 	github.com/subosito/gotenv v1.6.0 // indirect
 	github.com/tidwall/match v1.1.1 // indirect
 	github.com/tidwall/pretty v1.2.1 // indirect
-	github.com/tidwall/sjson v1.2.5 // indirect
 	github.com/yosida95/uritemplate/v3 v3.0.2 // indirect
 	go.uber.org/atomic v1.9.0 // indirect
 	go.uber.org/automaxprocs v1.6.0 // indirect

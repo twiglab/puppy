@@ -61,9 +61,11 @@ func run() {
 
 	exec := buildLocalExec(conf)
 	exec.Init()
+		fmt.Println("xxxxx")
 
 	app := buildGBotApp(conf)
 	bot := buildGBot(conf)
+		fmt.Println("xYYYY")
 	exec.RegJob(app)
 	exec.RegJob(bot)
 
