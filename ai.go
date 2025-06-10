@@ -26,7 +26,6 @@ func NewAI(base string) *AI {
 		client: c,
 		base:   base,
 	}
-
 }
 
 func (a *AI) Ask(ctx context.Context, q string) (string, error) {
@@ -40,6 +39,5 @@ func (a *AI) Ask(ctx context.Context, q string) (string, error) {
 	if err != nil {
 		return "", err
 	}
-
 	return resp.Result, nil
 }
