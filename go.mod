@@ -3,14 +3,13 @@ module github.com/twiglab/puppy
 go 1.24.2
 
 require (
-	github.com/go-chi/chi/v5 v5.2.1
-	github.com/imroc/req/v3 v3.52.2
+	github.com/go-chi/chi/v5 v5.2.2
+	github.com/imroc/req/v3 v3.53.0
 	github.com/it512/xxl-job-exec v0.0.0-20250604151812-a520539d7331
-	github.com/mark3labs/mcp-go v0.31.0
 	github.com/spf13/cobra v1.9.1
 	github.com/spf13/viper v1.20.1
 	github.com/tidwall/gjson v1.18.0
-	github.com/twiglab/doggy v0.0.0-20250525061416-9684c1100b9b
+	github.com/twiglab/doggy v0.0.0-20250628014310-d7437a72ff40
 	github.com/xen0n/go-workwx/v2 v2.0.0-20250512044836-ae8c900c575c
 	github.com/ybbus/jsonrpc/v3 v3.1.6
 	gopkg.in/natefinch/lumberjack.v2 v2.2.1
@@ -23,9 +22,8 @@ require (
 	github.com/cloudflare/circl v1.6.1 // indirect
 	github.com/fsnotify/fsnotify v1.8.0 // indirect
 	github.com/go-task/slim-sprig/v3 v3.0.0 // indirect
-	github.com/go-viper/mapstructure/v2 v2.2.1 // indirect
-	github.com/google/pprof v0.0.0-20250501235452-c0086092b71a // indirect
-	github.com/google/uuid v1.6.0 // indirect
+	github.com/go-viper/mapstructure/v2 v2.3.0 // indirect
+	github.com/google/pprof v0.0.0-20250607225305-033d6d78b36a // indirect
 	github.com/hashicorp/errwrap v1.1.0 // indirect
 	github.com/hashicorp/go-multierror v1.1.1 // indirect
 	github.com/icholy/digest v1.1.0 // indirect
@@ -44,7 +42,6 @@ require (
 	github.com/subosito/gotenv v1.6.0 // indirect
 	github.com/tidwall/match v1.1.1 // indirect
 	github.com/tidwall/pretty v1.2.1 // indirect
-	github.com/yosida95/uritemplate/v3 v3.0.2 // indirect
 	go.uber.org/atomic v1.9.0 // indirect
 	go.uber.org/automaxprocs v1.6.0 // indirect
 	go.uber.org/mock v0.5.2 // indirect

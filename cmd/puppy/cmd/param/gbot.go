@@ -23,16 +23,7 @@ func init() {
 }
 
 func gbotParam() {
-	p := gbot.JobParam{
-		Date:  "now",
-		Proj:  "项目名称",
-		Entry: []string{"abcd", "1234"},
-		Areas: []gbot.Area{
-			{ID: "A", Name: "BF1", Cameras: []string{"5678", "wxyz"}},
-			{ID: "B", Name: "F1", Cameras: []string{"4567", "hijk"}},
-			{ID: "C", Name: "F2", Cameras: []string{"7890", "opqr"}},
-		},
-	}
+	p := gbot.JobParam{}
 
 	enc := json.NewEncoder(os.Stdout)
 	enc.SetIndent("", "  ")

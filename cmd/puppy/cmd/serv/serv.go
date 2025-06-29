@@ -7,9 +7,9 @@ import (
 	"os"
 
 	"github.com/go-chi/chi/v5"
+	"github.com/go-chi/chi/v5/middleware"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
-	"github.com/twiglab/puppy/gbot"
 	"gopkg.in/yaml.v3"
 )
 
@@ -61,20 +61,16 @@ func run() {
 
 	exec := buildLocalExec(conf)
 	exec.Init()
-		fmt.Println("xxxxx")
 
 	app := buildGBotApp(conf)
-	bot := buildGBot(conf)
-		fmt.Println("xYYYY")
 	exec.RegJob(app)
-	exec.RegJob(bot)
 
 	h := buildHandle(conf, app)
 
 	mux := chi.NewMux()
+	mux.Use(middleware.Logger, middleware.Recoverer)
 	mux.Mount("/", exec)
 	mux.Handle("/gbot", h)
-	mux.Handle("/mcp", gbot.McpHandle())
 
 	if err := http.ListenAndServe(exec.LocalAddr, mux); err != nil {
 		log.Fatal(err)

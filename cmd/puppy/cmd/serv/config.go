@@ -89,26 +89,14 @@ func buildGBotApp(conf AppConf) *gbot.GBotApp {
 		Tpl:    gbot.GBotTemplate(),
 
 		App: app,
-
-		AI:puppy.NewAI("http://119.8.32.64:8000"),
-	}
-}
-
-func buildGBot(conf AppConf) *gbot.GBot {
-	c := req.C().EnableInsecureSkipVerify()
-	dcp := puppy.NewDcpServ(conf.DcpConf.URL, c)
-	weather := puppy.NewAmapWeather(conf.AmapWeatherConf.Key, c)
-
-	return &gbot.GBot{
-		Weater: weather,
-		Dcp:    dcp,
-		Tpl:    gbot.GBotTemplate(),
 	}
 }
 
 func buildHandle(conf AppConf, h workwx.RxMessageHandler) http.Handler {
-	x, err := workwx.NewHTTPHandler(conf.WxAppConf.WxAppReceiveConf.Token,
-		conf.WxAppConf.WxAppReceiveConf.AESKey, h)
+	x, err := workwx.NewHTTPHandler(
+		conf.WxAppConf.WxAppReceiveConf.Token,
+		conf.WxAppConf.WxAppReceiveConf.AESKey, h,
+	)
 	if err != nil {
 		log.Fatal(err)
 	}

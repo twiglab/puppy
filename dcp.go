@@ -25,8 +25,8 @@ func NewDcpServ(url string, client *req.Client) *DcpServ {
 }
 
 func (s *DcpServ) Sum(ctx context.Context, start, end time.Time, ids []string) (int64, error) {
-	var out oc.Reply
-	err := s.cli.CallFor(ctx, &out, oc.CALL_SUM, &oc.AreaArg{
+	var out oc.SumReply
+	err := s.cli.CallFor(ctx, &out, oc.SumCall, &oc.SumArg{
 		Start: start.UnixMilli(),
 		End:   end.UnixMilli(),
 		IDs:   ids,
@@ -34,5 +34,5 @@ func (s *DcpServ) Sum(ctx context.Context, start, end time.Time, ids []string) (
 	if err != nil {
 		return 0, err
 	}
-	return out.ValueA, nil
+	return out.InTotal, nil
 }

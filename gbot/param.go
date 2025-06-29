@@ -19,17 +19,7 @@ type BotResult struct {
 	Items []Item
 }
 
-type Area struct {
-	ID      string   `json:"id"`
-	Name    string   `json:"name"`
-	Cameras []string `json:"cameras"`
-}
-
 type JobParam struct {
-	Proj  string   `json:"proj"`
-	Entry []string `json:"entry"`
-
-	Areas []Area `json:"areas,omitempty"`
-
-	Date string `json:"-"`
+	ProjID string   `json:"proj_id"`
+	Tags   []string `jaon:"tags"`
 }

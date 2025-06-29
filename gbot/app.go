@@ -16,9 +16,9 @@ import (
 type GBotApp struct {
 	App *workwx.WorkwxApp
 
-	Dcp    *puppy.DcpServ
-	Weater *puppy.AmapWeather
-	AI     *puppy.AI
+	Dcp      *puppy.DcpServ
+	Weater   *puppy.AmapWeather
+	DataLoad *YamlDataLoad
 
 	Tpl *template.Template
 }
@@ -42,24 +42,34 @@ func (b *GBotApp) Run(ctx context.Context, req *xxl.RunReq) (fmt.Stringer, error
 
 	now := time.Now()
 	br := BotResult{
-		ProjName: jp.Proj,
-		Date:     now,
+		Date: now,
 	}
 
-	start, end = OpeningTime(now)
-	br.Total, err = b.Dcp.Sum(ctx, start, end, jp.Entry)
+	err = b.DataLoad.Each(jp.ProjID, "entry", func(proj Project, area Area) error {
+		br.ProjName = proj.Name
+
+		start, end = OpeningTime(now)
+		br.Total, err = b.Dcp.Sum(ctx, start, end, area.Cameras)
+		if err != nil {
+			return err
+		}
+
+		br.Night, err = b.Dcp.Sum(ctx, start, end, area.Cameras)
+		if err != nil {
+			return err
+		}
+
+		start, end = OpeningTime(BeforWeekDay(now))
+		br.BeforWeekDay, err = b.Dcp.Sum(ctx, start, end, area.Cameras)
+		if err != nil {
+			return err
+		}
+
+		return nil
+	})
 	if err != nil {
-		return nil, err
+		return xxl.JobRtn(err)
 	}
-
-	start, end = NightTime(now)
-	br.Night, err = b.Dcp.Sum(ctx, start, end, jp.Entry)
-	if err != nil {
-		return nil, err
-	}
-
-	start, end = OpeningTime(BeforWeekDay(now))
-	br.BeforWeekDay, err = b.Dcp.Sum(ctx, start, end, jp.Entry)
 
 	wi, _ := b.Weater.GetWeather(ctx, "320100")
 
@@ -80,19 +90,5 @@ func (b *GBotApp) Run(ctx context.Context, req *xxl.RunReq) (fmt.Stringer, error
 }
 
 func (a *GBotApp) OnIncomingMessage(msg *workwx.RxMessage) error {
-	if msg.MsgType == workwx.MessageTypeText {
-		text, _ := msg.Text()
-		callWord := text.GetContent()
-		s, err := a.AI.Ask(context.Background(), callWord)
-		if err != nil {
-			return err
-		}
-
-		return a.App.SendTextMessage(
-			&workwx.Recipient{UserIDs: []string{msg.FromUserID}},
-			s,
-			false,
-		)
-	}
 	return nil
 }

@@ -11,8 +11,6 @@ import (
 	"github.com/it512/xxl-job-exec"
 )
 
-const key_xxl_req = "_xxl_param"
-
 type XxlJob interface {
 	Name() string
 	Run(context.Context, *xxl.RunReq) (fmt.Stringer, error)
